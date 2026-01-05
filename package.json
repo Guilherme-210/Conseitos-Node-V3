@@ -1,4 +1,19 @@
 {
   "name": "conceitos-node-v3",
-  "packageManager": "yarn@4.11.0"
+  "packageManager": "yarn@4.11.0",
+  "license": "ISC",
+  "author": "Guilherme Reis",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node",
+    "dev": "nodemon"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
 }
