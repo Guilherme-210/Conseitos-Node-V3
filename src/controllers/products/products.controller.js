@@ -1,3 +1,4 @@
+import crypto from 'node:crypto'
 import { products } from '../../mock/index.js' 
 
 class ProductController {
@@ -24,11 +25,11 @@ class ProductController {
         const { id } = req.params
         
         try {
-            const index = products.findIndex((p) => p.id === parseInt(id))
+            const index = products.findIndex((p) => p.id === id)
 
             if (index <= -1) {
                 res.status(404)
-                throw new Error("Produto não encontrado!");
+                throw new Error("Recurso não encontrado!");
             }
 
             res.status(200).json(products[index])
@@ -58,14 +59,20 @@ class ProductController {
 
     // Adicionar produto
     postProduct(req, res, next) {
-        const { name, price, category } = req.body 
+        const { name, price, category, slug, description, brand, stock, rating, reviews } = req.body 
 
         try {
             const product = {
-                id: products.length + 1,
+                id: crypto.randomUUID(),
                 name,
                 price,
-                category
+                category,
+                slug,
+                description,
+                brand,
+                stock,
+                rating,
+                reviews
             }
 
             products.push(product)
@@ -79,21 +86,27 @@ class ProductController {
     // Editar produto 
     putProduct(req, res, next) {
         const { id } = req.params
-        const { name, price, category } = req.body
+        const { name, price, category, slug, description, brand, stock, rating, reviews } = req.body
 
         try {
-            const index = products.findIndex((p) => p.id === parseInt(id))
+            const index = products.findIndex((p) => p.id === id)
 
             if (index <= -1) {
                 res.status(404)
-                throw new Error("Produto não encontrado!");
+                throw new Error("Recurso não encontrado!");
             }
 
             products[index] = {
                 id: products[index].id, 
                 name, 
                 price, 
-                category 
+                category,
+                slug,
+                description,
+                brand,
+                stock,
+                rating,
+                reviews 
             }
 
             return res.status(200).json(products[index])
@@ -105,21 +118,27 @@ class ProductController {
     // Editar produto 
     patchProduct(req, res, next) {
         const { id } = req.params
-        const { name, price, category } = req.body
+        const { name, price, category, slug, description, brand, stock, rating, reviews } = req.body
 
         try {
-            const index = products.findIndex((p) => p.id === parseInt(id))
+            const index = products.findIndex((p) => p.id === id)
 
             if (index === -1) {
                 res.status(404)
-                throw new Error("Produto não encontrado!");
+                throw new Error("Recurso não encontrado!");
             }
 
             products[index] = {
                 id: products[index].id, 
                 name, 
                 price, 
-                category 
+                category,
+                slug,
+                description,
+                brand,
+                stock,
+                rating,
+                reviews 
             }
 
             return res.status(200).json(`Produto ${products[index].name} atualizado!`)
@@ -132,11 +151,11 @@ class ProductController {
         const { id } = req.params
 
         try {
-            const index = products.findIndex((p) => p.id === parseInt(id))
+            const index = products.findIndex((p) => p.id === id)
 
             if (index <= -1) {
                 res.status(404)
-                throw new Error("Produto não encontrado!");
+                throw new Error("Recurso não encontrado!");
             }
             
             products.splice(index, 1)

@@ -1,6 +1,6 @@
 export const products = [
   {
-    "id": 1,
+    "id": "fda1dfcf-7bd0-4518-94c2-06e80caf4e04",
     "name": "Produto A",
     "price": 29.99,
     "category": "Eletrônicos",
@@ -12,7 +12,7 @@ export const products = [
     "reviews": 120
   },
   {
-    "id": 2,
+    "id": "750c49cf-bac6-4653-996f-8194be53993f",
     "name": "Produto B",
     "price": 15.50,
     "category": "Roupas",
@@ -24,7 +24,7 @@ export const products = [
     "reviews": 85
   },
   {
-    "id": 3,
+    "id": "655ddae7-a64a-4ca7-a599-4fd1de382b19",
     "name": "Produto C",
     "price": 45.00,
     "category": "Livros",
@@ -36,7 +36,7 @@ export const products = [
     "reviews": 200
   },
   {
-    "id": 4,
+    "id": "2b2a2b1d-da6b-4b6e-8d68-727ec595a0f4",
     "name": "Produto D",
     "price": 12.99,
     "category": "Alimentos",
@@ -48,8 +48,8 @@ export const products = [
     "reviews": 60
   },
   {
-    "id": 5,
-    "name": "Produto C",
+    "id": "f6f93f1b-c378-4f78-baf8-90d486cf4231",
+    "name": "Produto E",
     "price": 99.99,
     "category": "Eletrodomésticos",
     "slug": "produto-e",
