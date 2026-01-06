@@ -24,7 +24,7 @@ routerProducts.get('/:id', PC.getProduct)
 
 routerProducts.put('/:id', validateData, PC.putProduct)
 
-routerProducts.patch('/:id', validateData, PC.patchProduct)
+routerProducts.patch('/:id', PC.patchProduct)
 
 routerProducts.delete('/:id', PC.deleteProduct)
 

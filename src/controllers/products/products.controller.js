@@ -7,16 +7,18 @@ class ProductController {
         const { category } = req.query
 
         try {
-            const filteredProducts = category 
-                ? products.filter((p) => p.category === category)
-                : products
-            
-            return res.status(200).json({ 
-                "total": filteredProducts.length,
-                "products list": filteredProducts
+            let filteredProducts = products
+
+            if (category) {
+                filteredProducts = products.filter((p) => p.category.toLowerCase() === category.toLowerCase())
+            }
+
+            return res.status(200).json({
+                total: filteredProducts.length,
+                products: filteredProducts
             })
         } catch (error) {
-            return res.status(500).send('Erro interno')
+            return res.status(500).json({ error: 'Erro interno do servidor' })
         }
     }
 
@@ -25,16 +27,15 @@ class ProductController {
         const { id } = req.params
         
         try {
-            const index = products.findIndex((p) => p.id === id)
+            const product = products.find((p) => p.id === id)
 
-            if (index <= -1) {
-                res.status(404)
-                throw new Error("Recurso não encontrado!");
+            if (!product) {
+                return res.status(404).json({ error: 'Produto não encontrado' })
             }
 
-            res.status(200).json(products[index])
+            return res.status(200).json(product)
         } catch (error) {
-            return res.send(error.message)
+            return res.status(500).json({ error: 'Erro interno do servidor' })
         }
     }
 
@@ -48,20 +49,22 @@ class ProductController {
                 p.category.toLowerCase().includes(q.toLowerCase())
             )
 
-            return res.status(200).json({ 
-                "total": filteredProducts.length,
-                "products list": filteredProducts
+            return res.status(200).json({
+                total: filteredProducts.length,
+                products: filteredProducts
             })
         } catch (error) {
-            return res.status(500).send('Erro interno')
+            return res.status(500).json({ error: 'Erro interno do servidor' })
         }
     }
 
     // Adicionar produto
     postProduct(req, res, next) {
-        const { name, price, category, slug, description, brand, stock, rating, reviews } = req.body 
+        const { name, price, category, description, brand, stock, rating, reviews } = req.body 
 
         try {
+            const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+
             const product = {
                 id: crypto.randomUUID(),
                 name,
@@ -77,56 +80,25 @@ class ProductController {
 
             products.push(product)
 
-            return res.status(200).json({ "Produto adicionado": product })
+            return res.status(201).json({ message: 'Produto adicionado com sucesso', product })
         } catch (error) {
-            return res.status(500).send('Erro interno')
+            return res.status(500).json({ error: 'Erro interno do servidor' })
         }
     }
 
-    // Editar produto 
+    // Editar produto (update completo)
     putProduct(req, res, next) {
         const { id } = req.params
-        const { name, price, category, slug, description, brand, stock, rating, reviews } = req.body
-
-        try {
-            const index = products.findIndex((p) => p.id === id)
-
-            if (index <= -1) {
-                res.status(404)
-                throw new Error("Recurso não encontrado!");
-            }
-
-            products[index] = {
-                id: products[index].id, 
-                name, 
-                price, 
-                category,
-                slug,
-                description,
-                brand,
-                stock,
-                rating,
-                reviews 
-            }
-
-            return res.status(200).json(products[index])
-        } catch (error) {
-            return res.send(error.message)
-        }
-    }
-
-    // Editar produto 
-    patchProduct(req, res, next) {
-        const { id } = req.params
-        const { name, price, category, slug, description, brand, stock, rating, reviews } = req.body
+        const { name, price, category, description, brand, stock, rating, reviews } = req.body
 
         try {
             const index = products.findIndex((p) => p.id === id)
 
             if (index === -1) {
-                res.status(404)
-                throw new Error("Recurso não encontrado!");
+                return res.status(404).json({ error: 'Produto não encontrado' })
             }
+
+            const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
 
             products[index] = {
                 id: products[index].id, 
@@ -141,9 +113,35 @@ class ProductController {
                 reviews 
             }
 
-            return res.status(200).json(`Produto ${products[index].name} atualizado!`)
+            return res.status(200).json({ message: 'Produto atualizado com sucesso', product: products[index] })
         } catch (error) {
-            return res.send(error.message)
+            return res.status(500).json({ error: 'Erro interno do servidor' })
+        }
+    }
+
+    // Editar produto (update parcial)
+    patchProduct(req, res, next) {
+        const { id } = req.params
+        const updates = req.body
+
+        try {
+            const index = products.findIndex((p) => p.id === id)
+
+            if (index === -1) {
+                return res.status(404).json({ error: 'Produto não encontrado' })
+            }
+
+            // Se name for atualizado, regenerar slug
+            if (updates.name) {
+                updates.slug = updates.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+            }
+
+            // Merge parcial
+            Object.assign(products[index], updates)
+
+            return res.status(200).json({ message: 'Produto atualizado com sucesso', product: products[index] })
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro interno do servidor' })
         }
     }
 
@@ -153,16 +151,15 @@ class ProductController {
         try {
             const index = products.findIndex((p) => p.id === id)
 
-            if (index <= -1) {
-                res.status(404)
-                throw new Error("Recurso não encontrado!");
+            if (index === -1) {
+                return res.status(404).json({ error: 'Produto não encontrado' })
             }
             
             products.splice(index, 1)
 
-            res.status(200).send("Produto excluido com sucesso!")
+            return res.status(200).json({ message: 'Produto excluído com sucesso' })
         } catch (error) {
-            return res.send(error.message)
+            return res.status(500).json({ error: 'Erro interno do servidor' })
         }
     }
 }

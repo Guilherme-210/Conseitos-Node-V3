@@ -4,7 +4,7 @@ export const products = [
     "name": "Produto A",
     "price": 29.99,
     "category": "Eletrônicos",
-    "slug": "produto-a  ",
+    "slug": "produto-a",
     "description": "Um dispositivo eletrônico portátil com bateria de longa duração.",
     "brand": "MarcaX",
     "stock": 50,
