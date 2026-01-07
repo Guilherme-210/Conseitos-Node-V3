@@ -1,3 +1,4 @@
-import { products } from './porducts.js'
+import { products } from './products.js'
+import { usersData } from './users.js'
 
-export { products }
+export { products, usersData }
